@@ -1,3 +1,4 @@
+import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect } from "react";
 import UFCWrapper from "./components/UFCWrapper";
@@ -9,16 +10,15 @@ export default function Home() {
     } as FightCard);
 
     useEffect(() => {
-        invoke("fetch_data", {})
-            .then((data) => {
-                setFights(data as FightCard);
-            })
-            .catch((error) => console.log(error));
+        listen("update_data", (event) => {
+            console.log(event);
+            setFights(event.payload as FightCard);
+        });
+        invoke("init_fetching_data", {});
     }, []);
 
     return (
         <main>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
             <div className="grid justify-center">
                 <h1 className="text-3xl font-bold">{cachedFights.name}</h1>
             </div>

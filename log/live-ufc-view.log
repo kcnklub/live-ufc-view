@@ -1,0 +1,51 @@
+2023-02-25T21:14:58.421387+00:00 [src/main.rs:20] INFO app://////////////////////////////////
+2023-02-25T21:14:58.421444+00:00 [src/main.rs:21] INFO app:///// STARTING UFC LIVE VIEW /////
+2023-02-25T21:14:58.421460+00:00 [src/main.rs:22] INFO app://////////////////////////////////
+2023-02-25T21:15:12.661521+00:00 [src/main.rs:44] INFO app:Data fetching Thread started!
+2023-02-25T21:15:14.230285+00:00 [src/main.rs:44] INFO app:Data fetching Thread started!
+2023-02-25T21:15:15.976082+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 15019ms
+2023-02-25T21:15:18.386370+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 4156ms
+2023-02-25T21:15:23.909660+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 520ms
+2023-02-25T21:15:24.661810+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 528ms
+2023-02-25T21:15:29.688946+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 773ms
+2023-02-25T21:15:30.374262+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 707ms
+2023-02-25T21:15:35.849118+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 1152ms
+2023-02-25T21:15:36.546097+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 1161ms
+2023-02-25T21:15:41.957718+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 1105ms
+2023-02-25T21:15:42.644015+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 1095ms
+2023-02-25T21:15:52.868372+00:00 [src/main.rs:20] INFO app://////////////////////////////////
+2023-02-25T21:15:52.868421+00:00 [src/main.rs:21] INFO app:///// STARTING UFC LIVE VIEW /////
+2023-02-25T21:15:52.868437+00:00 [src/main.rs:22] INFO app://////////////////////////////////
+2023-02-25T21:16:10.275461+00:00 [src/main.rs:44] INFO app:Data fetching Thread started!
+2023-02-25T21:16:20.471592+00:00 [src/main.rs:44] INFO app:Data fetching Thread started!
+2023-02-25T21:16:21.754881+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 559ms
+2023-02-25T21:16:21.771825+00:00 [src/main.rs:85] INFO app:Total data fetching and parsing in 8045ms
+2023-02-25T22:17:37.339626+00:00 [src/main.rs:25] INFO app://////////////////////////////////
+2023-02-25T22:17:37.339934+00:00 [src/main.rs:26] INFO app:///// STARTING UFC LIVE VIEW /////
+2023-02-25T22:17:37.339956+00:00 [src/main.rs:27] INFO app://////////////////////////////////
+2023-02-25T22:17:43.913720+00:00 [src/main.rs:57] INFO app:Data fetching Thread started!
+2023-02-25T22:17:47.578051+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 752ms
+2023-02-25T22:17:53.016735+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 434ms
+2023-02-25T22:17:58.534184+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 512ms
+2023-02-25T22:18:04.192359+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 651ms
+2023-02-25T22:18:09.724302+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 526ms
+2023-02-25T22:18:15.472976+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 740ms
+2023-02-25T22:18:21.206873+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 727ms
+2023-02-25T22:18:26.671498+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 458ms
+2023-02-25T22:18:32.325889+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 648ms
+2023-02-25T22:18:37.761800+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 428ms
+2023-02-25T22:18:43.314300+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 545ms
+2023-02-25T22:18:48.762846+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 443ms
+2023-02-25T22:18:54.396482+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 629ms
+2023-02-25T22:18:59.836328+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 435ms
+2023-02-25T22:19:05.368198+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 526ms
+2023-02-25T22:19:10.804475+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 429ms
+2023-02-25T22:19:16.291628+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 480ms
+2023-02-25T22:19:21.771868+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 473ms
+2023-02-25T22:19:27.284384+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 505ms
+2023-02-25T22:19:32.804977+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 514ms
+2023-02-25T22:19:38.431844+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 619ms
+2023-02-25T22:19:43.908574+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 475ms
+2023-02-25T22:19:49.414864+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 499ms
+2023-02-25T22:19:54.976367+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 555ms
+2023-02-25T22:20:00.410490+00:00 [src/main.rs:99] INFO app:Total data fetching and parsing in 433ms

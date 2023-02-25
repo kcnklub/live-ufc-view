@@ -3,51 +3,75 @@
     windows_subsystem = "windows"
 )]
 
-use std::error::Error;
+use std::sync::Mutex;
+use std::time::Duration;
+use std::{error::Error, thread};
 use std::vec;
 
 use easy_scraper::Pattern;
-use log::info;
+use log::{info, warn};
 use reqwest::blocking::Client;
 use serde::{Deserialize, Serialize};
+use tauri::{Window, State};
+
+struct Storage {
+    is_fetching_data: Mutex<bool>
+}
 
 fn main()
 {
-    log4rs::init_file("log.yml", Default::default()).expect("Cannot init logger.");
+    log4rs::init_file("src-tauri/log.yml", Default::default()).expect("Cannot init logger.");
 
     info!("//////////////////////////////////");
     info!("///// STARTING UFC LIVE VIEW /////");
     info!("//////////////////////////////////");
 
+    
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![fetch_data])
+        .manage(Storage { is_fetching_data: Default::default()})
+        .invoke_handler(tauri::generate_handler![init_fetching_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command]
-fn fetch_data() -> Result<Fights, String>
+fn init_fetching_data(window: Window, storage: State<Storage>)
 {
-    match load_data()
-    {
-        Ok(result) => Ok(result),
-        Err(_error) => Err("Error while getting data".to_string()),
+
+    let mut is_fetching = storage.is_fetching_data.lock().unwrap(); 
+    if *is_fetching {
+        return;
     }
+    thread::spawn(move || {
+        loop {
+            let data = match load_data() {
+                Ok(result) => result,
+                Err(_error) => Fights::default(),
+            }; 
+            thread::sleep(Duration::new(5, 0));
+
+            window.emit("update_data", data).unwrap();
+        }
+    });
+    info!("Data fetching Thread started!");
+    *is_fetching = true;
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 struct Fights
 {
     name: String,
     fights: Vec<Fight>,
 }
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Clone, Serialize, Deserialize, Default)]
 struct Fight
 {
     id: String,
     left_fighter: Fighter,
     right_fighter: Fighter,
+    odds: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Default)]
@@ -60,13 +84,27 @@ struct Fighter
 
 fn load_data() -> Result<Fights, Box<dyn Error>>
 {
+    let start_time = chrono::Local::now().timestamp_millis();
     let client: reqwest::blocking::Client = Client::new();
     let current_content = client
         .get("https:/espn.com/mma/fightcenter")
         .send()?
         .text()?;
 
-    parse_html_easy_scraper(&current_content)
+    match parse_html_easy_scraper(&current_content)
+    {
+        Ok(result) =>
+        {
+            let total_time = chrono::Local::now().timestamp_millis() - start_time;
+            info!("Total data fetching and parsing in {total_time}ms");
+            Ok(result)
+        }
+        Err(error) =>
+        {
+            warn!("Error parsing content from ESPN: {error}");
+            Err(error)
+        }
+    }
 }
 
 const CARD_TITLE: &str = r#"<h1 class="headline headline__h1 mb3">{{title}}</h1>"#;
@@ -83,7 +121,9 @@ const FIGHTER_ROW_PATTERN_STRING: &str = r#"
             </div>
         </div>
     </div>
-    <div></div>
+    <div class="Gamestrip__Overview relative items-center clr-gray-04 flex justify-center flex-column n8 MMAGamestrip__Overview">
+        <div class="ScoreCell__Odds Gamestrip__Odds clr-gray-03 n9">{{odds}}</div>
+    </div>
     <div class="MMACompetitor relative flex flex-uniform pl6 MMACompetitor--desktop">
         <div class="flex w-100">
             <div class="MMACompetitor__Detail flex flex-column justify-center">
@@ -104,20 +144,13 @@ const FIGHTER_RECORD_LEFT: &str = "fighter_record_left";
 
 fn parse_html_easy_scraper(content: &String) -> Result<Fights, Box<dyn Error>>
 {
-    info!("parsing with easy scraper");
     let fighter_pattern = Pattern::new(FIGHTER_ROW_PATTERN_STRING)?;
-
-    info!("created pattern");
-
     let fighter_rows = fighter_pattern.matches(content);
-    info!("{:?}", fighter_rows);
 
     let mut counter = 0;
     let mut fights = vec![];
     for row in fighter_rows
     {
-        info!("{:?}", row);
-
         let fighter_left = Fighter {
             name: row[FIGHTER_NAME_RIGHT].to_string(),
             record: row[FIGHTER_RECORD_RIGHT].to_string(),
@@ -134,6 +167,7 @@ fn parse_html_easy_scraper(content: &String) -> Result<Fights, Box<dyn Error>>
             id: counter.to_string(),
             left_fighter: fighter_left,
             right_fighter: fighter_right,
+            odds: row["odds"].to_string(),
         });
         counter += 1;
     }
@@ -142,7 +176,7 @@ fn parse_html_easy_scraper(content: &String) -> Result<Fights, Box<dyn Error>>
     let title = title_pattern.matches(content)[0]["title"].to_string();
 
     Ok(Fights {
-        name: title, 
-        fights: fights
+        name: title,
+        fights: fights,
     })
 }

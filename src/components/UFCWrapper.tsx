@@ -15,6 +15,7 @@ const UFCWrapper = (data: UFCCardData) => {
                             key={fight.id}
                             left={fight.left_fighter}
                             right={fight.right_fighter}
+                            odds={fight.odds}
                         ></FightRow>
                     );
                 })}

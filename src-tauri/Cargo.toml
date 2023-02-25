@@ -25,6 +25,7 @@ log = "0.4.17"
 thiserror = "1.0.38"
 log4rs = "1.2.0"
 easy-scraper = "0.2.0"
+chrono = "0.4.23"
 
 [features]
 # by default Tauri runs in production mode

@@ -12,6 +12,7 @@ interface Fight {
     id: string;
     left_fighter: Fighter;
     right_fighter: Fighter;
+    odds: string;
 }
 
 interface Fighter {
