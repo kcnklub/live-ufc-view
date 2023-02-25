@@ -1,0 +1,22 @@
+appenders: 
+  stdout: 
+    kind: console
+    encoder: 
+      pattern: "{d(%+)(utc)} [{f}:{L}] {h({l})} {M}:{m}{n}"
+    filters: 
+      - kind: threshold
+        level: info
+  live-ufc-view: 
+    kind: file
+    path: "log/live-ufc-view.log"
+    encoder: 
+      pattern: "{d(%+)(utc)} [{f}:{L}] {h({l})} {M}:{m}{n}"
+    filters: 
+      - kind: threshold
+        level: info
+
+root: 
+  level: info
+  appenders:
+    - stdout
+    - endpoint
