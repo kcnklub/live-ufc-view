@@ -9,8 +9,8 @@ interface RowData {
 const FightRow = (props: RowData) => {
     return (
         <div className="grid grid-cols-2">
-            <Fighter fighter={props.left}></Fighter>
-            <Fighter fighter={props.right}></Fighter>
+            <Fighter side="left" fighter={props.left}></Fighter>
+            <Fighter side="right" fighter={props.right}></Fighter>
         </div>
     );
 };

@@ -18,6 +18,7 @@ export default function Home() {
 
     return (
         <main>
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
             <div className="grid justify-center">
                 <h1 className="text-3xl font-bold">{cachedFights.name}</h1>
             </div>

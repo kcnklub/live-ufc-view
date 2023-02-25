@@ -6,9 +6,9 @@
 use std::error::Error;
 use std::vec;
 
+use easy_scraper::Pattern;
 use log::info;
 use reqwest::blocking::Client;
-use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 
 fn main()
@@ -35,14 +35,14 @@ fn fetch_data() -> Result<Fights, String>
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Default)]
 struct Fights
 {
     name: String,
     fights: Vec<Fight>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Default)]
 struct Fight
 {
     id: String,
@@ -66,68 +66,83 @@ fn load_data() -> Result<Fights, Box<dyn Error>>
         .send()?
         .text()?;
 
-    parse_document(current_content)
+    parse_html_easy_scraper(&current_content)
 }
 
-const FIGHTER_SELECTOR_STRING: &str =
-    r#"div[class="MMACompetitor relative flex flex-uniform pr3"]"#;
+const CARD_TITLE: &str = r#"<h1 class="headline headline__h1 mb3">{{title}}</h1>"#;
 
-const NAME_SELECTOR: &str = r#"span[class="truncate tc db"]"#;
+const FIGHTER_ROW_PATTERN_STRING: &str = r#"
+<div class="MMAGamestrip flex items-center justify-center">
+    <div class="MMACompetitor relative flex flex-uniform pr6 flex-row-reverse MMACompetitor--desktop"> 
+        <div class="flex w-100 flex-row-reverse">
+            <div class="MMACompetitor__Detail flex flex-column justify-center">
+                <h2 class="h4 clr-gray-02">
+                    <span class="truncate tc db">{{fighter_name_left}}</span>
+                </h2>
+                <div class="flex items-center n9 nowrap justify-end clr-gray-04">{{fighter_record_left}}</div>
+            </div>
+        </div>
+    </div>
+    <div></div>
+    <div class="MMACompetitor relative flex flex-uniform pl6 MMACompetitor--desktop">
+        <div class="flex w-100">
+            <div class="MMACompetitor__Detail flex flex-column justify-center">
+                <h2 class="h4 clr-gray-02">
+                    <span class="truncate tc db">{{fighter_name_right}}</span>
+                </h2>
+                <div class="flex items-center n9 nowrap clr-gray-04">{{fighter_record_right}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+"#;
 
-const RECORD_SELECTOR_LEFT: &str =
-    r#"div[class="flex items-center n9 nowrap justify-end clr-gray-04"]"#;
+const FIGHTER_NAME_RIGHT: &str = "fighter_name_right";
+const FIGHTER_RECORD_RIGHT: &str = "fighter_record_right";
+const FIGHTER_NAME_LEFT: &str = "fighter_name_left";
+const FIGHTER_RECORD_LEFT: &str = "fighter_record_left";
 
-const RECORD_SELECTOR_RIGHT: &str = r#"div[class="flex items-center n9 nowrap clr-gray-04"]"#;
-
-fn parse_document(content: String) -> Result<Fights, Box<dyn Error>>
+fn parse_html_easy_scraper(content: &String) -> Result<Fights, Box<dyn Error>>
 {
-    let document = Html::parse_document(&content);
-    let fighter_selector = Selector::parse(FIGHTER_SELECTOR_STRING)?;
+    info!("parsing with easy scraper");
+    let fighter_pattern = Pattern::new(FIGHTER_ROW_PATTERN_STRING)?;
 
-    let mut fight_list = vec![];
+    info!("created pattern");
+
+    let fighter_rows = fighter_pattern.matches(content);
+    info!("{:?}", fighter_rows);
+
     let mut counter = 0;
-    let mut left_fighter = Fighter::default();
-    let mut right_fighter = Fighter::default();
-    
-    for element in document.select(&fighter_selector)
+    let mut fights = vec![];
+    for row in fighter_rows
     {
-        info!("Fighter found");
-        let is_left = counter % 2 == 0;
-        let name_selector = Selector::parse(NAME_SELECTOR)?;
-        for name in element.select(&name_selector)
-        {
-            match is_left
-            {
-                true => left_fighter.name = name.inner_html(),
-                false => right_fighter.name = name.inner_html(),
-            }
-        }
+        info!("{:?}", row);
 
-        let record_selector = Selector::parse(RECORD_SELECTOR_LEFT)?;
-        for record in element.select(&record_selector)
-        {
-            left_fighter.record = record.inner_html().trim().to_string();
-        }
+        let fighter_left = Fighter {
+            name: row[FIGHTER_NAME_RIGHT].to_string(),
+            record: row[FIGHTER_RECORD_RIGHT].to_string(),
+            headshot_source: "".to_string(),
+        };
 
-        let record_selector_right = Selector::parse(RECORD_SELECTOR_RIGHT)?;
-        for record in element.select(&record_selector_right)
-        {
-            right_fighter.record = record.inner_html().trim().to_string();
-        }
+        let fighter_right = Fighter {
+            name: row[FIGHTER_NAME_LEFT].to_string(),
+            record: row[FIGHTER_RECORD_LEFT].to_string(),
+            headshot_source: "".to_string(),
+        };
 
-        if counter % 2 != 0
-        {
-            fight_list.push(Fight {
-                id: counter.to_string(),
-                left_fighter: left_fighter.clone(),
-                right_fighter: right_fighter.clone(),
-            })
-        }
+        fights.push(Fight {
+            id: counter.to_string(),
+            left_fighter: fighter_left,
+            right_fighter: fighter_right,
+        });
         counter += 1;
     }
 
+    let title_pattern = Pattern::new(CARD_TITLE)?;
+    let title = title_pattern.matches(content)[0]["title"].to_string();
+
     Ok(Fights {
-        name: "UFC Fight Night: Krylov vs. Spann".to_string(),
-        fights: fight_list,
+        name: title, 
+        fights: fights
     })
 }

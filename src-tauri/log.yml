@@ -19,4 +19,4 @@ root:
   level: info
   appenders:
     - stdout
-    - endpoint
+    - live-ufc-view

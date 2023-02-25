@@ -51,6 +51,7 @@ checksum = "224afbd727c3d6e4b90103ece64b8d1b67fbb1973b1046c2281eed3f3803f800"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "easy-scraper",
  "env_logger",
  "log",
  "log4rs",
@@ -642,6 +643,17 @@ name = "dunce"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0bd4b30a6560bbd9b4620f4de34c3f14f60848e58a9b7216801afcb4c7b31c3c"
+
+[[package]]
+name = "easy-scraper"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "18a857bc01b5ae04874234f6b5d16b8b8fa86910aa5777479c2669b5df607fce"
+dependencies = [
+ "html5ever 0.25.2",
+ "kuchiki",
+ "regex",
+]
 
 [[package]]
 name = "ego-tree"
