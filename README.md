@@ -1,5 +1,6 @@
 ## Getting Started
 
+To run a development instance of this application run the follows.
 ```bash
-I don't know what I am doing.
+cargo tauri dev
 ```
