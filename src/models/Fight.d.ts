@@ -20,3 +20,15 @@ interface Fighter {
     record: string;
     headshotSource: string;
 }
+
+interface FighterStats {
+    height: string, 
+    weight: string, 
+    reach: string, 
+    stance: string, 
+    sig_str_lpm: string, 
+    sig_str_acc: string, 
+    td_avg: string, 
+    td_acc: string, 
+    sub_avg: string
+}

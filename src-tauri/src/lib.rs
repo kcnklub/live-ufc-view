@@ -21,6 +21,20 @@ pub struct Fight {
 pub struct Fighter {
     name: String,
     record: String,
+    stats: FighterStats
+}
+
+#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
+pub struct FighterStats {
+    height: String, 
+    weight: String, 
+    reach: String, 
+    stance: String, 
+    sig_str_lpm: String, 
+    sig_str_acc: String, 
+    td_avg: String, 
+    td_acc: String, 
+    sub_avg: String
 }
 
 #[cfg(test)]
@@ -103,10 +117,12 @@ fn get_fight_details(content: String, id: String) -> Result<Fight, Box<dyn Error
         left_fighter: Fighter {
             name: fighter_info[0]["content"].to_string(),
             record: fighter_info[1]["content"].to_string(),
+            stats: FighterStats::default(),
         },
         right_fighter: Fighter {
             name: fighter_info[5]["content"].to_string(),
             record: fighter_info[6]["content"].to_string(),
+            stats: FighterStats::default(),
         },
         odds: fighter_info[4]["content"].to_string(),
     };
