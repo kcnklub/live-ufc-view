@@ -1,0 +1,3 @@
+.row {
+    @apply bg-neutral-600 m-8 rounded-lg drop-shadow-xl
+}

@@ -1,6 +1,7 @@
 import React from "react";
 import Fighter from "./Fighter";
 import FightMedian from "./FightMedian";
+import styles from "./FightRow.module.css";
 
 interface RowData {
     left: Fighter;
@@ -10,7 +11,7 @@ interface RowData {
 
 const FightRow = (props: RowData) => {
     return (
-        <div className="grid grid-cols-7">
+        <div className={`${styles.row} grid grid-cols-7`}>
             <Fighter side="left" fighter={props.left}></Fighter>
             <FightMedian odds={props.odds}></FightMedian>
             <Fighter side="right" fighter={props.right}></Fighter>
@@ -18,4 +19,4 @@ const FightRow = (props: RowData) => {
     );
 };
 
-export default FightRow;
+export default FightRow

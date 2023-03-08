@@ -84,7 +84,6 @@ fn get_current_fight(content: &String) -> Result<Fight, Box<dyn Error>>
     let current_fight_string = r#"<div class="MMAFightCard__Gamestrip br-5 mh4 relative MMAFightCard__Gamestrip--open">{{content:*}}</div>"#;
     let pat = Pattern::new(current_fight_string)?; 
     let current_fight_data = pat.matches(&content); 
-   
 
     Ok(get_fight_details(current_fight_data[0]["content"].to_string(), "main_card".to_string())?)
 }
@@ -111,7 +110,6 @@ fn get_fight_details(content: String, id: String) -> Result<Fight, Box<dyn Error
     let pat = Pattern::new(fighter_pattern_string).unwrap();
     let fighter_info = pat.matches(&content);
 
-
     let fight = Fight {
         id,
         left_fighter: Fighter {
@@ -128,4 +126,38 @@ fn get_fight_details(content: String, id: String) -> Result<Fight, Box<dyn Error
     };
 
     Ok(fight)
+}
+
+#[cfg(test)]
+mod fighter_stat_parsing
+{
+    use crate::parse_fighter_stats;
+
+    #[test]
+    fn stat_parsing()
+    {
+        let content = reqwest::blocking::get("https://espn.com/mma/fightcenter")
+            .unwrap()
+            .text()
+            .unwrap();
+
+        parse_fighter_stats(&content);
+    }
+}
+
+fn parse_fighter_stats(content: &String)
+{
+    let top_stats_string = r#"<ul class="MMAMatchup list">{{content:*}}</ul>"#;
+    let pat = Pattern::new(top_stats_string).unwrap();
+    let matches = pat.matches(&content); 
+
+    let match_data = matches[0]["content"].to_string();
+    let stat_row_string = r#"<li><div class="ns9 fw-medium ttu nowrap clr-gray-04">{{content}}</div></li>"#;
+    let pat = Pattern::new(stat_row_string).unwrap();
+
+    let rows = pat.matches(&match_data); 
+
+    for row in rows {
+        println!("{:?}", row);
+    }
 }
