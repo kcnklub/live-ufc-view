@@ -11,7 +11,6 @@ export default function Home() {
 
     useEffect(() => {
         listen("update_data", (event) => {
-            console.log(event);
             setFights(event.payload as FightCard);
         });
         invoke("init_fetching_data", {});

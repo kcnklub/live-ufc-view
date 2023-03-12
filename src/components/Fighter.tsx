@@ -13,11 +13,13 @@ const Fighter = (props: FighterProps) => {
     };
 
     return (
-        <div className={`p-4 col-span-3`}>
-            <h3 className={`${justifyContent()} text-lg`}>{fighter.name}</h3>
-            <p className={`${justifyContent()} text-sm`}>{fighter.record}</p>
-        </div>
-    );
+            <>
+                <div className={`p-4 col-span-3`}>
+                    <h3 className={`${justifyContent()} text-lg`}>{fighter.name}</h3>
+                    <p className={`${justifyContent()} text-sm`}>{fighter.record}</p>
+                </div>
+            </>
+           );
 };
 
 export default Fighter;

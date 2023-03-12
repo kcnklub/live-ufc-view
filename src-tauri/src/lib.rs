@@ -2,6 +2,8 @@ use serde::{Serialize, Deserialize};
 use std::error::Error;
 use easy_scraper::Pattern;
 
+mod stats;
+
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct Fights {
     name: String,
@@ -21,20 +23,7 @@ pub struct Fight {
 pub struct Fighter {
     name: String,
     record: String,
-    stats: FighterStats
-}
-
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq)]
-pub struct FighterStats {
-    height: String, 
-    weight: String, 
-    reach: String, 
-    stance: String, 
-    sig_str_lpm: String, 
-    sig_str_acc: String, 
-    td_avg: String, 
-    td_acc: String, 
-    sub_avg: String
+    stats: stats::FighterStats
 }
 
 #[cfg(test)]
@@ -53,13 +42,19 @@ mod get_fight_card_test {
     }
 }
 
-
 pub fn get_fight_card(content: &String) -> Result<Fights, Box<dyn Error>>
 {
 
     let card_name = get_card_name(&content)?;
-    let current_fight = get_current_fight(&content)?;
-    let fights = get_all_fights(&content)?;
+    let mut current_fight = get_current_fight(&content)?;
+    let (left, right) = stats::get_stats(&content)?;
+
+    current_fight.right_fighter.stats = right;
+    current_fight.left_fighter.stats = left;
+    
+    let mut fights = get_all_fights(&content)?;
+
+    fights[0] = current_fight.clone();
 
     let fights = Fights {
         name: card_name,
@@ -115,49 +110,15 @@ fn get_fight_details(content: String, id: String) -> Result<Fight, Box<dyn Error
         left_fighter: Fighter {
             name: fighter_info[0]["content"].to_string(),
             record: fighter_info[1]["content"].to_string(),
-            stats: FighterStats::default(),
+            stats: stats::FighterStats::default(),
         },
         right_fighter: Fighter {
             name: fighter_info[5]["content"].to_string(),
             record: fighter_info[6]["content"].to_string(),
-            stats: FighterStats::default(),
+            stats: stats::FighterStats::default(),
         },
         odds: fighter_info[4]["content"].to_string(),
     };
 
     Ok(fight)
-}
-
-#[cfg(test)]
-mod fighter_stat_parsing
-{
-    use crate::parse_fighter_stats;
-
-    #[test]
-    fn stat_parsing()
-    {
-        let content = reqwest::blocking::get("https://espn.com/mma/fightcenter")
-            .unwrap()
-            .text()
-            .unwrap();
-
-        parse_fighter_stats(&content);
-    }
-}
-
-fn parse_fighter_stats(content: &String)
-{
-    let top_stats_string = r#"<ul class="MMAMatchup list">{{content:*}}</ul>"#;
-    let pat = Pattern::new(top_stats_string).unwrap();
-    let matches = pat.matches(&content); 
-
-    let match_data = matches[0]["content"].to_string();
-    let stat_row_string = r#"<li><div class="ns9 fw-medium ttu nowrap clr-gray-04">{{content}}</div></li>"#;
-    let pat = Pattern::new(stat_row_string).unwrap();
-
-    let rows = pat.matches(&match_data); 
-
-    for row in rows {
-        println!("{:?}", row);
-    }
 }
