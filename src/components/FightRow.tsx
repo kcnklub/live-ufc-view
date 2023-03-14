@@ -11,7 +11,7 @@ interface RowData {
 }
 
 const FightRow = (props: RowData) => {
-    const hasStats : boolean = props.left.stats.kd !== "";
+    const hasStats : boolean = props.left.stats.kd !== "" || props.left.stats.height !== "";
 
     const borderRadius = () => {
         return hasStats ? "rounded-t-lg" : "rounded-lg";

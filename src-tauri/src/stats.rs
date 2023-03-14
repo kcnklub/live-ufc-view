@@ -13,8 +13,17 @@ pub struct FighterStats {
     legs: String, 
     control: String, 
     take_downs: String,
-    sub_att: String
-}
+    sub_att: String,
+    height: String,
+    weight: String,
+    reach: String,
+    stance: String, 
+    sig_str_acc: String, 
+    sig_str_lpm: String, 
+    td_avg: String,
+    td_acc: String,
+    sub_avg: String,
+}  
 
 pub fn get_stats(content : &String) -> Result<(FighterStats, FighterStats), Box<dyn Error>>
 {
@@ -120,6 +129,15 @@ fn reparse_stats(map: HashMap<String, String>) -> FighterStats
                 "CONTROL" => final_stats.control = value.to_string(), 
                 "TAKE DOWNS" => final_stats.take_downs = value.to_string(), 
                 "SUB ATT" => final_stats.sub_att = value.to_string(),
+                "HEIGHT" => final_stats.height = value.to_string(),
+                "WEIGHT" => final_stats.weight = value.to_string(),
+                "REACH" => final_stats.reach = value.to_string(), 
+                "STANCE" => final_stats.stance = value.to_string(),
+                "SIG STR LPM" => final_stats.sig_str_lpm = value.to_string(),
+                "SIG STR ACC" => final_stats.sig_str_acc = value.to_string(), 
+                "TD AVG"  => final_stats.td_avg = value.to_string(),
+                "TD ACC" => final_stats.td_acc = value.to_string(),
+                "SUB AVG" => final_stats.sub_avg = value.to_string(),
                 _ => println!(""),
             };
         });

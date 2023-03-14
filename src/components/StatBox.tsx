@@ -11,6 +11,44 @@ const StatBox = (props: StatsProp) => {
     return (
             <ul className={`${styles.stats} `}>
                 <StatRow 
+                    leftStat={props.leftStats.height}
+                    rightStat={props.rightStats.height}
+                    statName="HEIGHT"/>
+                <StatRow 
+                    leftStat={props.leftStats.weight}
+                    rightStat={props.rightStats.weight}
+                    statName="WEIGHT"/>
+                <StatRow 
+                    leftStat={props.leftStats.reach}
+                    rightStat={props.rightStats.reach}
+                    statName="REACH"/>
+                <StatRow 
+                    leftStat={props.leftStats.stance}
+                    rightStat={props.rightStats.stance}
+                    statName="STANCE"/>
+                <StatRow 
+                    leftStat={props.leftStats.sig_str_lpm}
+                    rightStat={props.rightStats.sig_str_lpm}
+                    statName="SIG STR LPM"/>
+                <StatRow 
+                    leftStat={props.leftStats.sig_str_acc}
+                    rightStat={props.rightStats.sig_str_acc}
+                    statName="SIG STR ACC"/>
+                <StatRow 
+                    leftStat={props.leftStats.td_avg}
+                    rightStat={props.rightStats.td_avg}
+                    statName="TD AVG"/>
+                <StatRow 
+                    leftStat={props.leftStats.td_acc}
+                    rightStat={props.rightStats.td_acc}
+                    statName="TD ACC"/>
+                <StatRow 
+                    leftStat={props.leftStats.sub_avg}
+                    rightStat={props.rightStats.sub_avg}
+                    statName="SUB AVG"/>
+
+
+                <StatRow 
                     leftStat={props.leftStats.kd} 
                     rightStat={props.rightStats.kd} 
                     statName="KD"/>
@@ -57,14 +95,18 @@ interface StatRowProps{
 }
 
 const StatRow = (props: StatRowProps) => {
-    return (
-        <li className="grid grid-cols-7">
-            <p className="col-span-3 flex justify-end">{props.leftStat}</p>
-            <div className="pt-2 grow-0">
-                <p className="text-xs flex justify-center">{props.statName}</p>
-            </div>
-            <p>{props.rightStat}</p>
-        </li>
+    const hasData: boolean = props.leftStat !== ""
+    return (<>
+        {
+            hasData && 
+            <li className="grid grid-cols-7">
+                <p className="col-span-3 flex justify-end">{props.leftStat}</p>
+                <div className="pt-2 grow-0">
+                    <p className="text-xs flex justify-center">{props.statName}</p>
+                </div>
+                <p>{props.rightStat}</p>
+            </li>
+        }</>
     )
 }
 

@@ -32,4 +32,13 @@ interface FighterStats {
     control: string; 
     take_downs: string; 
     sub_att: string;
+    height: string; 
+    weight: string; 
+    reach: string; 
+    stance: string;
+    sig_str_lpm: string;
+    sig_str_acc: string; 
+    td_avg: string; 
+    td_acc: string; 
+    sub_avg: string; 
 }
