@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize}; 
-use std::error::Error;
 use easy_scraper::Pattern;
+use serde::{Deserialize, Serialize};
+use std::error::Error;
 
 mod stats;
 
@@ -23,12 +23,12 @@ pub struct Fight {
 pub struct Fighter {
     name: String,
     record: String,
-    stats: stats::FighterStats
+    stats: stats::FighterStats,
 }
 
 #[cfg(test)]
 mod get_fight_card_test {
-    use crate::get_fight_card; 
+    use crate::get_fight_card;
 
     #[test]
     fn getting_raw_row_data() {
@@ -42,31 +42,28 @@ mod get_fight_card_test {
     }
 }
 
-pub fn get_fight_card(content: &String) -> Result<Fights, Box<dyn Error>>
-{
-
+pub fn get_fight_card(content: &String) -> Result<Fights, Box<dyn Error>> {
     let card_name = get_card_name(&content)?;
     let mut current_fight = get_current_fight(&content)?;
     let (left, right) = stats::get_stats(&content)?;
 
     current_fight.right_fighter.stats = right;
     current_fight.left_fighter.stats = left;
-    
+
     let mut fights = get_all_fights(&content)?;
 
     fights[0] = current_fight.clone();
 
     let fights = Fights {
         name: card_name,
-        current_fight, 
-        fights, 
+        current_fight,
+        fights,
     };
 
     Ok(fights)
 }
 
-fn get_card_name(content: &String) -> Result<String, Box<dyn Error>>
-{
+fn get_card_name(content: &String) -> Result<String, Box<dyn Error>> {
     let card_name_pat_string = r#"<h1 class="headline__h1 mb3">{{content}}</h1>"#;
     let pat = Pattern::new(card_name_pat_string)?;
     let matches = pat.matches(&content);
@@ -74,21 +71,23 @@ fn get_card_name(content: &String) -> Result<String, Box<dyn Error>>
     Ok(matches[0]["content"].to_string())
 }
 
-fn get_current_fight(content: &String) -> Result<Fight, Box<dyn Error>>
-{
+fn get_current_fight(content: &String) -> Result<Fight, Box<dyn Error>> {
     let current_fight_string = r#"<div class="MMAFightCard__Gamestrip br-5 mh4 relative MMAFightCard__Gamestrip--open">{{content:*}}</div>"#;
-    let pat = Pattern::new(current_fight_string)?; 
-    let current_fight_data = pat.matches(&content); 
+    let pat = Pattern::new(current_fight_string)?;
+    let current_fight_data = pat.matches(&content);
 
-    Ok(get_fight_details(current_fight_data[0]["content"].to_string(), "main_card".to_string())?)
+    Ok(get_fight_details(
+        current_fight_data[0]["content"].to_string(),
+        "main_card".to_string(),
+    )?)
 }
 
-fn get_all_fights(content: &String) -> Result<Vec<Fight>, Box<dyn Error>>
-{
-    let all_fight_string = r#"<div class="MMAFightCard__Gamestrip br-5 mh4 relative">{{content:*}}</div>"#;
-    let pat = Pattern::new(all_fight_string)?; 
+fn get_all_fights(content: &String) -> Result<Vec<Fight>, Box<dyn Error>> {
+    let all_fight_string =
+        r#"<div class="MMAFightCard__Gamestrip br-5 mh4 relative">{{content:*}}</div>"#;
+    let pat = Pattern::new(all_fight_string)?;
     let raw_fight_data = pat.matches(&content);
-    
+
     let mut counter = 1;
     let mut all_fights: Vec<Fight> = vec![];
     for fight in raw_fight_data {
@@ -99,9 +98,11 @@ fn get_all_fights(content: &String) -> Result<Vec<Fight>, Box<dyn Error>>
     Ok(all_fights)
 }
 
-fn get_fight_details(content: String, id: String) -> Result<Fight, Box<dyn Error>>
-{
-    let fighter_pattern_string = r#"<div>{{content}}</div>"#; 
+fn get_fight_details(
+    content: String,
+    id: String,
+) -> Result<Fight, Box<dyn Error>> {
+    let fighter_pattern_string = r#"<div>{{content}}</div>"#;
     let pat = Pattern::new(fighter_pattern_string).unwrap();
     let fighter_info = pat.matches(&content);
 

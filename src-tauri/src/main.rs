@@ -4,12 +4,12 @@
 )]
 
 use std::sync::Mutex;
+use std::thread;
 use std::time::Duration;
 use std::vec;
-use std::thread;
 
-use app::Fights;
 use app::get_fight_card;
+use app::Fights;
 use log::info;
 use reqwest::blocking::Client;
 use tauri::{State, Window};
@@ -45,9 +45,12 @@ fn init_fetching_data(
     }
     thread::spawn(move || loop {
         let client: reqwest::blocking::Client = Client::new();
-        let current_content = client.get("https://espn.com/mma/fightcenter")
-            .send().unwrap()
-            .text().unwrap();
+        let current_content = client
+            .get("https://espn.com/mma/fightcenter")
+            .send()
+            .unwrap()
+            .text()
+            .unwrap();
         let data = match get_fight_card(&current_content) {
             Ok(result) => result,
             Err(_error) => Fights::default(),
