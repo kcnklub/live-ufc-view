@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::error::Error;
 
 mod stats;
+mod photos;
 
 #[derive(Clone, Serialize, Deserialize, Default, Debug)]
 pub struct Fights {
@@ -24,6 +25,7 @@ pub struct Fighter {
     name: String,
     record: String,
     stats: stats::FighterStats,
+    photo_src: String,
 }
 
 #[cfg(test)]
@@ -106,20 +108,25 @@ fn get_fight_details(
     let pat = Pattern::new(fighter_pattern_string).unwrap();
     let fighter_info = pat.matches(&content);
 
-    let fight = Fight {
+    let mut fight = Fight {
         id,
         left_fighter: Fighter {
             name: fighter_info[0]["content"].to_string(),
             record: fighter_info[1]["content"].to_string(),
             stats: stats::FighterStats::default(),
+            photo_src: String::new()
         },
         right_fighter: Fighter {
             name: fighter_info[5]["content"].to_string(),
             record: fighter_info[6]["content"].to_string(),
             stats: stats::FighterStats::default(),
+            photo_src: String::new()
         },
         odds: fighter_info[4]["content"].to_string(),
     };
+
+    fight.left_fighter.photo_src = photos::get_photo(fight.left_fighter.name.as_str());
+    fight.right_fighter.photo_src = photos::get_photo(fight.right_fighter.name.as_str());
 
     Ok(fight)
 }

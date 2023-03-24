@@ -18,7 +18,7 @@ interface Fight {
 interface Fighter {
     name: string;
     record: string;
-    headshotSource: string;
+    photo_src: string;
     stats: FighterStats;
 }
 
