@@ -5,7 +5,7 @@ import UFCWrapper from "./components/UFCWrapper";
 
 export default function Home() {
     const [cachedFights, setFights] = useState<FightCard>({
-        name: "NO - DATA",
+        name: "Loading",
         fights: [],
     } as FightCard);
 
